@@ -1,15 +1,21 @@
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
     public static Scanner scanner = new Scanner(System.in);
-    public static List<Integer> list=new ArrayList<Integer>();
+    public static List<Integer> IDlist=new ArrayList<Integer>();
+    public static List<String> UNIlist=new ArrayList<String>();
     public static int next=7;
     public static int current = 7;
     public static int number = 0;
+    public static DecimalFormat df_obj = new DecimalFormat("#.#");
+    public static HashMap<Float, String> univerityMap = new HashMap<Float, String>();
+    public static ArrayList<Float> sortedKeys= new ArrayList<Float>(univerityMap.keySet());
     public static void main(String[] args) throws Exception {
         
         while (number < 7) {
@@ -34,7 +40,7 @@ public class App {
 
         
         for (int i = 0; i < current; i++) {
-            list.add(student[i].getID());
+            IDlist.add(student[i].getID());
         }
 
         while (checkForGrades(student)) {
@@ -45,6 +51,10 @@ public class App {
         }
 
         while (true) {
+            System.out.println("1. Add new student.");
+            System.out.println("2. Show students info.");
+            System.out.println("3. Add new grade.");
+            System.out.println("4. Show all university and their student.");
             System.out.println("Your choice: ");
             int x = scanner.nextInt();
             switch (x) {
@@ -56,20 +66,29 @@ public class App {
                     }
                     student = temp;
                     addNewStudent(student);
+                    IDlist.add(student[number-1].getID());
                     student[number-1].setGrades(0.0, 0);
-                    checkForGrades(student);
-                    do {
+                    while (checkForGrades(student)) {
                         setNewGrades(student);    
-
-                    } while (checkForGrades(student));
+                    }
                     break;
+
                 case 2:
                     for (int i = 0; i < student.length; i++) {
                         student[i].show();
                     }
                     break;
+
+                case 3:
+                    setNewGrades(student);
+                    break;
+
+                case 4:
+                    lookForAllUnive(student);
+                    break;
             
                 default:
+                    System.out.println("Inncorect option!!");
                     break;
             }
         }
@@ -77,13 +96,13 @@ public class App {
 
     static void addNewStudent(Student student[]) { //Add new Student if you put more than 7
             for (int i = 0; i < current; i++) {
-                list.add(student[i].getID());
+                IDlist.add(student[i].getID());
             }
             int newId= 0;
             do {
                 System.out.print("Student ID: ");
                 newId = scanner.nextInt();
-            } while (isIdAvailableForNewStudent(list, newId));
+            } while (isIdAvailableForNewStudent(IDlist, newId));
             
             System.out.print("Student Name: ");
             String newName = scanner.nextLine();
@@ -126,21 +145,21 @@ public class App {
     static boolean checkForGrades (Student student[]) { // Returning false if every student has at least one grade
         List<Integer> studentWithouGrades=new ArrayList<Integer>();
         int n = 0;
-        for (int i = 0; i <= student.length; i++) {
+        for (int i = 0; i < student.length; i++) {
             n = 0;
             for (int j = 0; j < 10; j++) {
-                if (student[i].getGrades(j) != 0.0) {
+                if (student[i].getGrades(j) != 0) {
                     n++;
                 }
             }
             if (n == 0) {
                 studentWithouGrades.add(student[i].getID());
             }
-            if (studentWithouGrades.isEmpty()) {
-                return false;
-            }
         }
-        System.out.println("Students ID without grades: " + studentWithouGrades);
+        if (studentWithouGrades.isEmpty()) {
+            return false;
+        }
+        System.out.println("\nStudents ID without grades: " + studentWithouGrades + "\n");
         return true;
     }
 
@@ -151,8 +170,8 @@ public class App {
         do {
             System.out.print("Student ID: ");
             idToFind = scanner.nextInt();
-            studentId = isIdAvailableForGrades(list, idToFind);
-        } while (studentId == list.size()+1);
+            studentId = isIdAvailableForGrades(idToFind);
+        } while (studentId == IDlist.size()+1);
         System.out.print("Grade: ");
         newGrades = scanner.nextFloat();
         for (int i = 0; i < student.length; i++) {
@@ -167,10 +186,10 @@ public class App {
         }
     }
     
-    static int isIdAvailableForGrades(List<Integer> list, int number) { //Check if Id is available
+    static int isIdAvailableForGrades(int number) { //Check if Id is available
         
-        for(Integer id:list)  {
-            for (int i = 0; i < list.size(); i++) {
+        for(Integer id: IDlist)  {
+            for (int i = 0; i < IDlist.size(); i++) {
                 if (id == number) {
                     System.out.println("\nValid ID!!\n");
                     return id;
@@ -178,9 +197,57 @@ public class App {
             }
         }
         System.out.println("\nInvalid ID!!\n");
-        return list.size()+1;     
+        return IDlist.size()+1;     
+    }
+
+    public static void lookForAllUnive (Student student[]) { //Creating a list of every university without duplicat it 
+        for (int i = 0; i < current; i++) {
+            if (!UNIlist.contains(student[i].getUniversity())) {
+                UNIlist.add(student[i].getUniversity());
+            }
+        }
+        int numberOffGrades;
+        float grades;
+        for(int i=0;i<UNIlist.size();i++){
+            numberOffGrades = 0;
+            grades = 0;
+            for (int j = 0; j < student.length; j++) {
+                if (UNIlist.get(i).equals(student[j].getUniversity())) {
+                    for (int k = 0; k < 10; k++) {
+                        if (student[j].getGrades(k) != 0.0){
+                        numberOffGrades++;
+                        grades += student[j].getGrades(k);
+                        }
+                    }
+                }
+            }
+            grades = grades / numberOffGrades;
+            df_obj.setRoundingMode(RoundingMode.FLOOR);
+            univerityMap.put(grades, UNIlist.get(i));   
+        }
+        sortbykey(student);
+    }
+    
+    public static void sortbykey(Student student[]) { //Sorting and displaying evrey Student from one university
+            ArrayList<Float> sortedKeys= new ArrayList<Float>(univerityMap.keySet());
+     
+            Collections.sort(sortedKeys);
+            Collections.reverse(sortedKeys);
+
+            System.out.println("\n");
+            // Display the TreeMap which is naturally sorted
+            for (Float x : sortedKeys) {
+                System.out.println("University: " + univerityMap.get(x));
+                for (int i = 0; i < student.length; i++) {
+                    if (univerityMap.get(x).equals(student[i].getUniversity())) {
+                        System.out.println("    " + student[i].getName());
+                    }
+                }
+            }
+            System.out.println("\n");
     }
 }
+
 
 
 
@@ -224,12 +291,12 @@ class Student {
         if (grades != null) {
             for (int i = 0; i < grades.length; i++) {
                 if (grades[i] != 0.0){
-                DecimalFormat df_obj = new DecimalFormat("#.#");
-                df_obj.setRoundingMode(RoundingMode.FLOOR);
-                System.out.format("Grade:        " + df_obj.format(grades[i]) + "\n");
+                    DecimalFormat df_obj = new DecimalFormat("#.#");
+                    df_obj.setRoundingMode(RoundingMode.FLOOR);
+                    System.out.format("Grade:        " + df_obj.format(grades[i]) + "\n");
+                }
             }
-        }
-        System.out.println("\n");
+            System.out.println("\n");
         } 
         if (grades == null) {
             System.out.println("\nGrades are null");
