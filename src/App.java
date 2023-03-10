@@ -10,11 +10,13 @@ public class App {
     public static Scanner scanner = new Scanner(System.in);
     public static List<Integer> IDlist=new ArrayList<Integer>();
     public static List<String> UNIlist=new ArrayList<String>();
+    public static List<String> STUDlist=new ArrayList<String>();
     public static int next=7;
     public static int current = 7;
     public static int number = 0;
     public static DecimalFormat df_obj = new DecimalFormat("#.#");
     public static HashMap<Float, String> univerityMap = new HashMap<Float, String>();
+    public static HashMap<Float, String> studentMap = new HashMap<Float, String>();
     public static ArrayList<Float> sortedKeys= new ArrayList<Float>(univerityMap.keySet());
     public static void main(String[] args) throws Exception {
         
@@ -85,6 +87,13 @@ public class App {
 
                 case 4:
                     lookForAllUnive(student);
+                    sortbykey(student);
+                    break;
+
+                case 5:
+                    lookForAllUnive(student);
+                    System.out.println("\nAfter calculate GPA.\n");
+                    studentGPA(student);
                     break;
             
                 default:
@@ -201,7 +210,7 @@ public class App {
     }
 
     public static void lookForAllUnive (Student student[]) { //Creating a list of every university without duplicat it 
-        for (int i = 0; i < current; i++) {
+        for (int i = 0; i < number; i++) {
             if (!UNIlist.contains(student[i].getUniversity())) {
                 UNIlist.add(student[i].getUniversity());
             }
@@ -225,7 +234,7 @@ public class App {
             df_obj.setRoundingMode(RoundingMode.FLOOR);
             univerityMap.put(grades, UNIlist.get(i));   
         }
-        sortbykey(student);
+        
     }
     
     public static void sortbykey(Student student[]) { //Sorting and displaying evrey Student from one university
@@ -233,7 +242,7 @@ public class App {
      
             Collections.sort(sortedKeys);
             Collections.reverse(sortedKeys);
-
+    
             System.out.println("\n");
             // Display the TreeMap which is naturally sorted
             for (Float x : sortedKeys) {
@@ -246,7 +255,59 @@ public class App {
             }
             System.out.println("\n");
     }
-}
+
+
+    public static void studentGPA(Student student[]) { //Sorting and displaying evrey Student from one university
+        for (int i = 0; i < number; i++) {
+                STUDlist.add(student[i].getName());
+        }
+        int numberOffGrades;
+        float grades;
+        for(int i=0;i<STUDlist.size();i++){
+            numberOffGrades = 0;
+            grades = 0;
+            for (int j = 0; j < student.length; j++) {
+                if (STUDlist.get(i).equals(student[j].getName())) {
+                    for (int k = 0; k < 10; k++) {
+                        if (student[j].getGrades(k) != 0.0){
+                        numberOffGrades++;
+                        grades += student[j].getGrades(k);
+                        }
+                    }
+
+                }
+            }
+            grades = grades / numberOffGrades;
+            df_obj.setRoundingMode(RoundingMode.FLOOR);
+            studentMap.put(grades, STUDlist.get(i));   
+        }
+        ArrayList<Float> sortedKeysUNI= new ArrayList<Float>(univerityMap.keySet());
+        ArrayList<Float> sortedKeysSTU= new ArrayList<Float>(studentMap.keySet());
+     
+        Collections.sort(sortedKeysUNI);
+        Collections.sort(sortedKeysSTU);
+        Collections.reverse(sortedKeysSTU);
+        
+        System.out.println("\n");
+            // Display the TreeMap which is naturally sorted
+            for (Float x : sortedKeysUNI) {
+                System.out.println("University: " + univerityMap.get(x));
+                int n = 0;
+                for (Float y : sortedKeysSTU) {
+                for (int i = 0; i < student.length; i++) {
+                        if ((studentMap.get(y).equals(student[i].getName()))) {
+                            if (univerityMap.get(x).equals(student[i].getUniversity())) {
+                                if (n < 2) {
+                                    System.out.println("    " + studentMap.get(y));
+                                    n++;
+                                }
+                            }
+                        }
+                    }
+                }
+            System.out.println("\n");
+            }
+}}
 
 
 
@@ -304,3 +365,4 @@ class Student {
         
     }
 }
+

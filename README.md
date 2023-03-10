@@ -1,5 +1,7 @@
 CONDITION
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 You are given a number N and a list of N students. For each student you know their ID, name (a string of maximum 30 characters) and the name of the university they are studying (a string of maximum 10 characters).
 You are given a number M and a list of M grades. For each grade you know its value and who it belongs to (student ID). Each student will have at least one grade.
 A student’s GPA is defined as the average value among their grades.(rounded down to the first value after the decimal point. E.g.: 3.45 = 3.4).
@@ -28,6 +30,7 @@ Sample Input
 6.3 5
 9.0 99
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Subtask 1
 Print the universities sorted by their average GPA (the average of the students’ grades).
 Within a university print the names of the students sorted alphabetically.
@@ -50,6 +53,7 @@ UPT has 3 students: Cristina, Elena and Maria. The UPT’s average gpa is (9.0 +
 UTCN has 3 students: Andrei, George, Sergiu. The UTCN’s average gpa is (6.3+6.8+8.0+6.0+7.1) / 5 = 6.8
 UBB has only one student: Mihai. The UBB’s average gpa is 6.1
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Subtask 2
 Your goal is to find the students from each university who receive scholarships. Each university has 2 scholarships to give to their top students.
 You should output the students using the same format as Subtask 1.
@@ -68,6 +72,7 @@ George’s GPA is 6.8.
 Sergiu has 3 grades: 8.0, 6.0 and 7.1. His GPA is (8.0+6.0+7.1) / 3 = 7.03 which is rounded down to 7.0
 Mihai’s GPA is 6.1.
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Subtask 3
 The goal of this task is to balance the universities’ top GPAs. A university’s top GPA is calculated as the maximum of the students’ GPA.
 Balancing the university’ top GPA means that the best university and the worst university are as close as possible. In other words, minimize the difference between the highest and lowest university top GPAs.
