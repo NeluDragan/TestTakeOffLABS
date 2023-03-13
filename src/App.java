@@ -61,7 +61,8 @@ public class App {
             int x = scanner.nextInt();
             switch (x) {
                 case 1:
-                    number++;
+                    number++; 
+                    
                     Student temp[] = new Student[number];
                     for (int i = 0; i < temp.length - 1; i++) {
                         temp[i] = student[i];
